@@ -38,3 +38,5 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 *.Rproj
+
+cc.en.300.bin

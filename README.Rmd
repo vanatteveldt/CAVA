@@ -1,0 +1,86 @@
+---
+title: "README.Rmd"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.path = "img/README_")
+library(printr)
+```
+
+# Ça va, CAVA? Dictionary Coherence, Augmentation, (Validation and Analysis)
+
+CAVA is an R package to assit in working with dictionary (keywords/lexical text analysis) in a valid way.
+It allows you to use an embeddings model to do dictionary expansion/augmentation, check its coherence, (and at some future date) validation and analysis.
+
+For a longer description, see our [ICA Tool Demo abstract](CAVA_ICA_abstract.pdf).
+
+## Installing and obtaining an embeddings model
+
+You can install CAVA from github:
+
+```{r, eval=F}
+remotes::install_github("vanatteveldt/CAVA")
+```
+
+Before starting, you need an embeddings model. Currently, we only support Fasttext .bin models. 
+The code below downloads an English fasttext model:
+
+```{r}
+if (!file.exists("cc.en.300.bin")) {
+  url = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.bin.gz"
+  options(timeout=4300)  # assuming 1Mb/s
+  download.file(paste0(url), destfile = "cc.en.300.bin.gz")
+  R.utils::gunzip("cc.en.300.bin.gz") # Install R.utils if needed
+}
+```
+
+# Using CAVA
+
+The main functions exposed to cava are shown below. 
+For a more elaborate example, please see the [example usage file](usage.md).
+
+Loading the FastText mnodel, using the state of the union speeches as target corpus:
+
+```{r}
+library(CAVA)
+corpus = quanteda::corpus(sotu::sotu_text, docvars = sotu::sotu_meta)
+vectors = load_fasttext("cc.en.300.bin", corpus)
+```
+
+## Augmentation
+
+Expanding a dictionary using wildcard and similarity:
+
+```{r}
+dictionary = c("fin*", "eco*")
+dictionary = expand_wildcards(dictionary, vectors)
+candidates = similar_words(dictionary, vectors)
+dictionary = c(dictionary, candidates$word[candidates$similarity>.4])
+head(candidates)
+```
+
+Expanding a dictionary using antonyms:
+
+```{r}
+positive = c("good", "nice", "best", "happy")
+negative = c("evil", "nasty", "worst", "bad", "unhappy")
+candidates = similar_words(positive, vectors, antonyms = negative)
+head(candidates)
+```
+
+## Coherence
+
+Computing and plotting pairwise similarities:
+
+```{r coherence}
+similarities = pairwise_similarities(dictionary, vectors)
+similarities |> similarity_graph(max_edges=100) |> plot()
+```
+
+Computing similarity to dictionary centroid (sorted with most distances words on top):
+
+```{r}
+similarity_to_centroid(dictionary, vectors) |> head()
+```
+
