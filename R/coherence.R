@@ -3,6 +3,7 @@
 #' @param dictionary A character vector of words
 #' @param vectors A vectors object, e.g. as returned by load_fasttext
 #' @returns a (tibble) data frame with columns word1, word2, sim, frequency1 and frequency2
+#' @export
 pairwise_similarities <- function(dictionary, vectors) {
   v <- vectors$vectors[rownames(vectors$vectors) %in% dictionary,]
   v %*% t(v) |>
@@ -34,6 +35,8 @@ similarity_graph <- function(similarities, threshold=NULL, max_edges=NULL) {
   igraph::E(g)$width <- 1 + scales::rescale(igraph::E(g)$similarity)^3*10
   igraph::V(g)$shape <- "none"
   igraph::V(g)$label.cex <- .5 + scales::rescale(log(igraph::V(g)$n))
+  igraph::V(g)$cluster <- igraph::membership(igraph::cluster_walktrap(g, steps = 6))
+  igraph::V(g)$label.color <- igraph::V(g)$cluster
   return(g)
 }
 
@@ -57,5 +60,6 @@ similarity_to_centroid <- function(dictionary, vectors) {
   v <- vectors$vectors[rownames(vectors$vectors) %in% dictionary,]
   similarities <- (v %*% centroid)[,1]
   tibble::tibble(word=names(similarities), similarity=similarities) |>
-    dplyr::arrange(similarity)
+    dplyr::arrange(similarity) |>
+    dplyr::left_join(vectors$vocabulary)
 }

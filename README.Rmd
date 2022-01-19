@@ -24,16 +24,8 @@ remotes::install_github("vanatteveldt/CAVA")
 ```
 
 Before starting, you need an embeddings model. Currently, we only support Fasttext .bin models. 
-The code below downloads an English fasttext model:
+For example, you can download the [cc.en.300.bin.gz](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.bin.gz) model.
 
-```{r}
-if (!file.exists("cc.en.300.bin")) {
-  url = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.bin.gz"
-  options(timeout=4300)  # assuming 1Mb/s
-  download.file(paste0(url), destfile = "cc.en.300.bin.gz")
-  R.utils::gunzip("cc.en.300.bin.gz") # Install R.utils if needed
-}
-```
 
 # Using CAVA
 

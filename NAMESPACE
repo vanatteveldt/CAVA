@@ -3,6 +3,7 @@
 export(expand_wildcards)
 export(find_expansion_threshold)
 export(load_fasttext)
+export(pairwise_similarities)
 export(similar_words)
 export(similarity_graph)
 export(similarity_to_centroid)

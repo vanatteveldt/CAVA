@@ -18,7 +18,7 @@ similar_words = function(dictionary, vectors, antonyms=NULL) {
       dplyr::filter(is.na(similarity.anti) | similarity > similarity.anti, !word %in% antonyms) |>
       dplyr::select(-similarity.anti)
   }
-  similarities
+  dplyr::left_join(similarities, vectors$vocabulary, by="word")
 }
 
 #' Expand words using wildcard expansion
