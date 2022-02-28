@@ -24,7 +24,7 @@ similarity_graph <- function(similarities, threshold=NULL, max_edges=NULL) {
   if (!is.null(threshold))
     similarities <- dplyr::filter(similarities, similarity >= threshold)
   if (!is.null(max_edges))
-    similarities <- head(similarities, n=max_edges)
+    similarities <- utils::head(similarities, n=max_edges)
 
   v = dplyr::bind_rows(similarities |> dplyr::select(word=word1, n=frequency1),
                       similarities |> dplyr::select(word=word2, n=frequency2)) |>

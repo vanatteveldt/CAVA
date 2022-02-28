@@ -30,7 +30,7 @@ similar_words = function(dictionary, vectors, antonyms=NULL) {
 #' @export
 expand_wildcards = function(dictionary, vectors, type=c("glob","regex")) {
   type = match.arg(type, c("glob","regex"))
-  if (type == "glob") dictionary = glob2rx(dictionary)
+  if (type == "glob") dictionary = utils::glob2rx(dictionary)
   pattern = paste0("(?:", dictionary, ")", collapse="|")
   stringr::str_subset(vectors$vocabulary$word, pattern)
 }
