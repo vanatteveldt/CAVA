@@ -9,7 +9,7 @@
 load_fasttext <- function(filename, corpus=null, n=10000) {
   pb <- progress::progress_bar$new(total = 5, format=":what [:bar] :eta")
   pb$tick(tokens=list(what="Loading fasttext model"))
-  if (!require(fastTextR)) stop("load_fasttext requires the fastTextR module")
+  if (!requireNamespace("fastTextR", quietly = TRUE)) stop("load_fasttext requires the fastTextR module")
   filename <- path.expand(filename)
   if (!file.exists(filename)) stop(paste0("File ", filename, " does not exist"))
 
@@ -23,7 +23,7 @@ load_fasttext <- function(filename, corpus=null, n=10000) {
     pb$tick(tokens=list(what="Converting corpus"))
     vocabulary <- load_corpus(corpus) |>
       dplyr::filter(word %in% words) |>
-      head(n=n)
+      utils::head(n=n)
   } else {
     pb$tick(tokens=list(what="Estimating ranks"))
     vocabulary <- data.frame(words=words[1:n], frequency=.5^(0:(n-1)))
