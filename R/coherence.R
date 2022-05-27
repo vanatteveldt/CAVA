@@ -42,7 +42,7 @@ similarity_graph <- function(similarities, threshold=NULL, max_edges=NULL) {
 
 #' Compute the normalized centroid vector for the given dictionary
 get_centroid <- function(dictionary, vectors) {
-  v <- vectors$vectors[rownames(vectors$vectors) %in% dictionary,]
+  v <- vectors$vectors[rownames(vectors$vectors) %in% dictionary, ,drop=F]
   centroid <- colMeans(v)
   centroid / sqrt(sum(centroid^2))
 }
