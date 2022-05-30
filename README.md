@@ -1,7 +1,8 @@
 README.Rmd
 ================
 
-# Ça va, CAVA? Dictionary Coherence, Augmentation, (Validation and Analysis)
+# Ça va, CAVA‽
+## Dictionary Coherence, Augmentation, (Validation and Analysis)
 
 CAVA is an R package to assit in working with dictionary
 (keywords/lexical text analysis) in a valid way. It allows you to use an
