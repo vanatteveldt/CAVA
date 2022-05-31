@@ -68,9 +68,11 @@ evaluate_expansion = function(seed, vectors, split=.5, n=10)  {
   f = function(prec, rec, beta=1) {
     ifelse(prec+rec==0, 0, (1+beta^2)*prec*rec / (beta^2*prec + rec))
   }
-  do_evaluate = function(seed, vectors, split, k) {
-    train = sample(seed, split*length(seed)) |> expand_wildcards(vectors)
+  n_sample = if (split >= 1) split else split*length(seed)
+  do_evaluate = function(seed, vectors, n_sample, k) {
+    train = sample(seed, n_sample) 
     test = setdiff(seed, train) |> expand_wildcards(vectors)
+    train = expand_wildcards(train, vectors)
     message(glue::glue("|train|={length(train)}, |test|={length(test)}"))
     similar_words(train, vectors) |>
       arrange(desc(similarity)) |>
@@ -85,7 +87,7 @@ evaluate_expansion = function(seed, vectors, split=.5, n=10)  {
              frequency=NULL
              )
   }
- purrr::map(1:n, function(x) do_evaluate(seed, vectors, split, k)) |>
+ purrr::map(1:n, function(x) do_evaluate(seed, vectors, n_sample, k)) |>
    bind_rows()  |>
    group_by(word) |> 
    summarize(across(similarity:f4, list(mean=mean, sd=sd)))
